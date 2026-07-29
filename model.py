@@ -3,6 +3,16 @@ from torch import nn
 
 
 class DigitClassifier(nn.Module):
+    """
+    A convolutional neural network for 28x28 grayscale digit images.
+
+    Expected input shape:
+        (batch_size, 1, 28, 28)
+
+    Output shape:
+        (batch_size, 10)
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -31,16 +41,30 @@ class DigitClassifier(nn.Module):
 
             # Output: (batch, 64, 7, 7)
             nn.MaxPool2d(kernel_size=2),
+
+            nn.Conv2d(
+                in_channels=64,
+                out_channels=128,
+                kernel_size=3,
+                padding=1,
+            ),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
         )
 
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(64 * 7 * 7, 128),
+
+            # 128 feature maps, each 7x7 pixels.
+            nn.Linear(128 * 7 * 7, 256),
             nn.ReLU(),
-            nn.Dropout(p=0.3),
-            nn.Linear(128, 10),
+            nn.Dropout(p=0.35),
+
+            nn.Linear(256, 10),
         )
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
         features = self.features(images)
-        return self.classifier(features)
+        logits = self.classifier(features)
+
+        return logits

@@ -78,8 +78,6 @@ handwritten-digit-classifier/
     └── 9/
 ```
 
-The `personal_digits`, `personal_validation`, MNIST data, and trained model files do not need to be committed to the repository.
-
 ## Model Architecture
 
 The model is a convolutional neural network designed for grayscale `28 × 28` images.
